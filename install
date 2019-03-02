@@ -22,7 +22,7 @@
 # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-ROS_DISTRO=${ROS_DISTRO:-lunar}
+ROS_DISTRO=${ROS_DISTRO:-melodic}
 ROS_CONFIGURATION=${ROS_CONFIGURATION:-desktop_full}
 ROS_EXTRA_PACKAGES=${ROS_EXTRA_PACKAGES:-}
 ROS_INSTALL_DIR=${ROS_INSTALL_DIR:-/opt/ros/${ROS_DISTRO}}
@@ -84,14 +84,18 @@ do_install()
   fi
 
   # Gives us console_bridge, urdfdom, and gtest.
-  brew tap ros/deps
+  # brew tap ros/deps
+  brew tap toyoxx/homebrew-deps  
 
   # This tap gives us formulae for Gazebo and its dependencies, including SDF.
   brew tap osrf/simulation
 
   # ROS infrastructure tools
   brew install libyaml || true
-  pip2 install -U setuptools rosdep rosinstall_generator wstool rosinstall catkin_tools bloom empy sphinx pycurl
+  pip3 install -U setuptools rosdep rosinstall_generator wstool rosinstall catkin_tools bloom empy sphinx
+
+  export PYCURL_SSL_LIBRARY=openssl
+  export LDFLAGS=-L/usr/local/opt/openssl/lib;export CPPFLAGS=-I/usr/local/opt/openssl/include;pip3 install pycurl --compile --no-cache-dir
 
   # Rosdep has an issue detecting that qt5 is correctly installed, so preinstall it. This is a keg-only formula,
   # so add its location to the prefix path in order for workspace packages to be able to find it.
