@@ -92,10 +92,13 @@ do_install()
 
   # ROS infrastructure tools
   brew install libyaml || true
-  pip3 install -U setuptools rosdep google-mock rosinstall_generator wstool rosinstall catkin_tools bloom empy sphinx
+
+echo "Here 1"
+  pip install -U setuptools rosdep /google-mock rosinstall_generator wstool rosinstall catkin_tools bloom empy sphinx
+echo "Here 2"
 
   export PYCURL_SSL_LIBRARY=openssl
-  export LDFLAGS=-L/usr/local/opt/openssl/lib;export CPPFLAGS=-I/usr/local/opt/openssl/include;pip3 install pycurl --compile --no-cache-dir
+  export LDFLAGS=-L/usr/local/opt/openssl/lib;export CPPFLAGS=-I/usr/local/opt/openssl/include;pip install pycurl --compile --no-cache-dir
 
   # Rosdep has an issue detecting that qt5 is correctly installed, so preinstall it. This is a keg-only formula,
   # so add its location to the prefix path in order for workspace packages to be able to find it.
@@ -139,8 +142,8 @@ do_install()
   # FIX for python3 in Mac OSX Mojave
   pip uninstall vcstools
   pip uninstall wstools
-  pip3 install git+https://github.com/tkruse/vcstools@mock_server_tar_test
-  pip3 install wstool
+  pip install git+https://github.com/tkruse/vcstools@mock_server_tar_test
+  pip install wstool
 
   # Standard source install
   rosinstall_generator ${ROS_CONFIGURATION} ${ROS_EXTRA_PACKAGES} --rosdistro ${ROS_DISTRO} --deps --tar > ${WS}.rosinstall
