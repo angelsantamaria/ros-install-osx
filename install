@@ -92,7 +92,7 @@ do_install()
 
   # ROS infrastructure tools
   brew install libyaml || true
-  pip3 install -U setuptools rosdep rosinstall_generator wstool rosinstall catkin_tools bloom empy sphinx
+  pip3 install -U setuptools rosdep google-mock rosinstall_generator wstool rosinstall catkin_tools bloom empy sphinx
 
   export PYCURL_SSL_LIBRARY=openssl
   export LDFLAGS=-L/usr/local/opt/openssl/lib;export CPPFLAGS=-I/usr/local/opt/openssl/include;pip3 install pycurl --compile --no-cache-dir
@@ -151,6 +151,9 @@ do_install()
     wstool merge file://$(pwd)/../${WS}.rosinstall
     #wstool remove opencv3
     wstool update -j8
+
+# FIX some rosdep issues
+rosdep install --from-paths src --ignore-src --rosdistro melodic -y --skip-keys google-mock --skip-keys python-gnupg --skip-keys libgpgme-dev --skip-keys libgazebo9-dev --skip-keys gazebo9
 
     # See: https://github.com/ros/catkin/pull/784
     if [ -d catkin ]; then
