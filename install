@@ -70,6 +70,7 @@ do_install()
     echo "nuking your Homebrew installation and starting from scratch:"
     echo
     echo "    https://gist.github.com/mxcl/1173223"
+    echo "    with ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/uninstall)""
     echo
     echo "Alternatively, you could try chowning the contents of /usr/local to yourself:"
     echo
