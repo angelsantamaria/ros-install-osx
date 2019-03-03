@@ -93,12 +93,12 @@ do_install()
   # ROS infrastructure tools
   brew install libyaml || true
 
-echo "Here 1"
-  pip install -U setuptools rosdep /google-mock rosinstall_generator wstool rosinstall catkin_tools bloom empy sphinx
-echo "Here 2"
+pip install -U setuptools rosdep rosinstall_generator wstool rosinstall catkin_tools bloom empy sphinx
 
   export PYCURL_SSL_LIBRARY=openssl
-  export LDFLAGS=-L/usr/local/opt/openssl/lib;export CPPFLAGS=-I/usr/local/opt/openssl/include;pip install pycurl --compile --no-cache-dir
+  export LDFLAGS=-L/usr/local/opt/openssl/lib;export CPPFLAGS=-I/usr/local/opt/openssl/include;
+
+  pip install pycurl --compile --no-cache-dir
 
   # Rosdep has an issue detecting that qt5 is correctly installed, so preinstall it. This is a keg-only formula,
   # so add its location to the prefix path in order for workspace packages to be able to find it.
@@ -115,6 +115,10 @@ echo "Here 2"
   # Get homebrew's opencv3 from a bottle so that we don't have to build it.
   brew tap Homebrew/homebrew-core 
   brew install opencv3
+
+# POCO C++ library dependency
+ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)" < /dev/null 2> /dev/null
+brew install poco
 
   # Mock out python and pip so that we get the brewed versions when rosdep and other programs call them.
   # Mock out pip so that we get the brewed pip2 when rosdep calls it to make an installation.
@@ -136,8 +140,11 @@ echo "Here 2"
   if [ -d "$WS" ]; then
     rm -rf "$WS"
   fi
-  mkdir $WS
-  cd $WS
+  mkdir ../$WS
+
+cp melodic-desktop-full-wet.rosinstall ../$WS
+
+  cd ../$WS
 
   # FIX for python3 in Mac OSX Mojave
   pip uninstall vcstools
@@ -146,7 +153,7 @@ echo "Here 2"
   pip install wstool
 
   # Standard source install
-  rosinstall_generator ${ROS_CONFIGURATION} ${ROS_EXTRA_PACKAGES} --rosdistro ${ROS_DISTRO} --deps --tar > ${WS}.rosinstall
+  #rosinstall_generator ${ROS_CONFIGURATION} ${ROS_EXTRA_PACKAGES} --rosdistro ${ROS_DISTRO} --deps --tar > ${WS}.rosinstall
   wstool init src
   pushd src
 
@@ -194,6 +201,8 @@ rosdep install --from-paths src --ignore-src --rosdistro melodic -y --skip-keys 
   catkin config --install \
     --install-space ${ROS_INSTALL_DIR} \
     --cmake-args \
+      -DCMAKE_FIND_FRAMEWORK=LAST \
+      -DCMAKE_PREFIX_PATH=/usr/local/Cellar/qt/5.12.1 \
       -DCATKIN_ENABLE_TESTING=1 \
       -DCMAKE_BUILD_TYPE=Release \
       -DCMAKE_FIND_FRAMEWORK=LAST \
