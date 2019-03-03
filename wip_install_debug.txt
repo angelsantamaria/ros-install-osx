@@ -1,0 +1,32 @@
+
+
+
+# POCO C++ library dependency
+ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)" < /dev/null 2> /dev/null
+brew install poco
+
+pip uninstall vcstools
+pip uninstall wstools
+
+pip install git+https://github.com/tkruse/vcstools@mock_server_tar_test
+pip install wstool
+
+#Install mac headers using 
+/Library/Developer/CommandLineTools/Packages/macOS_SDK_headers_for_macOS_10.14.pkg
+
+# Create symbolic link to fix qt_gui_cpp_sip errors
+ln -s /usr/local/share/sip/Qt5 /usr/local/share/sip/PyQt5
+
+#Use own rosinstall file
+
+
+# Compile with 
+./src/catkin/bin/catkin_make_isolated --install -DCMAKE_FIND_FRAMEWORK=LAST -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=/usr/local/Cellar/qt/5.12.1 -Drosconsole_DIR=$PWD/install_isolated/share/rosconsole/cmake -Droslib_DIR=$PWD/install_isolated/share/roslib/cmake -Dcpp_common_DIR=$PWD/install_isolated/share/cpp_common/cmake -Droscpp_serialization_DIR=$PWD/install_isolated/share/roscpp_serialization/cmake -Droslz4_DIR=$PWD/install_isolated/share/roslz4/cmake -Dqt_gui_DIR=$PWD/install_isolated/share/qt_gui/cmake -Dmessage_generation_DIR=$PWD/install_isolated/share/message_generation/cmake -Dgenmsg_DIR=$PWD/install_isolated/share/genmsg/cmake
+
+## No compila encara
+
+## test:  export PYTHONPATH=$PWD/install_isolated/lib/python2.7/site-packages/
+
+## test: https://qiita.com/YoitsuKamijo/items/246683401e08d785a6ce
+
+
