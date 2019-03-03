@@ -110,6 +110,7 @@ do_install()
   popd
 
   # Get homebrew's opencv3 from a bottle so that we don't have to build it.
+  brew tap Homebrew/homebrew-core 
   brew install opencv3
 
   # Mock out python and pip so that we get the brewed versions when rosdep and other programs call them.
@@ -135,10 +136,17 @@ do_install()
   mkdir $WS
   cd $WS
 
+  # FIX for python3 in Mac OSX Mojave
+  pip uninstall vcstools
+  pip uninstall wstools
+  pip3 install git+https://github.com/tkruse/vcstools@mock_server_tar_test
+  pip3 install wstool
+
   # Standard source install
   rosinstall_generator ${ROS_CONFIGURATION} ${ROS_EXTRA_PACKAGES} --rosdistro ${ROS_DISTRO} --deps --tar > ${WS}.rosinstall
   wstool init src
   pushd src
+
     # Avoid downloading opencv3; we already installed it from homebrew.
     wstool merge file://$(pwd)/../${WS}.rosinstall
     wstool remove opencv3
